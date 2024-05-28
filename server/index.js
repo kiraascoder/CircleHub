@@ -2,11 +2,12 @@ import express from "express";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
+import router from "./routes/route.js";
 
 const app = express();
 app.use(express.json());
 app.use(cors({ origin: true }));
-
+app.use("/", router);
 dotenv.config(); // Load the environment variables
 
 const url = process.env.DATABASE_URL;
@@ -19,6 +20,7 @@ mongoose
   })
   .then(() => {
     console.log("Connected to MongoDB");
+
     app.listen(port, () => {
       console.log("Server running on port " + port);
     });
