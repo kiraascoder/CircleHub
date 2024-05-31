@@ -1,13 +1,16 @@
-POST https://localhost:3000/
+POST http://localhost:3000/
 Content-Type: application/json
 
 # { name, email, password, phoneNumber } = req.body;
 # Create User
 {
-    "name" : "Irmansyah",
-    "email": "irmansyahmuslimin05@gmail.com",
-    "passwword" : "12345",
+    "name" : "testing",
+    "email": "testing05@gmail.com",
+    "password" : "12345",
     "phoneNumber" : "081234567890"
 }
 
+###
 
+GET http://localhost:3000/
+Content-Type: application/json
