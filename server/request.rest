@@ -23,3 +23,8 @@ Content-Type: application/json
     "email": "testing0522222@gmail.com",
     "password" : "1234513213"
 }
+
+### Logout
+
+DELETE http://localhost:3000/api/logout
+Content-Type: application/json
