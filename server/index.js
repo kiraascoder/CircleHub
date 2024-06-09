@@ -3,16 +3,14 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
 import { router } from "./routes/route.js";
-import { protectedRoute } from "./routes/protectedRoute.js";
-import { verifyToken } from "./middleware/auth.js";
 
 dotenv.config(); // Load the environment variables
 const app = express();
 const url = process.env.DATABASE_URL;
 const port = 3000;
+export const jwtToken = process.env.JWT_SECRET;
 app.use(express.json());
 app.use(cors({ origin: true }));
-app.use("/api/protected", verifyToken, protectedRoute);
 app.use("/api", router);
 
 mongoose

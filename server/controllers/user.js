@@ -1,8 +1,9 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import { jwtToken } from "../index.js";
 // Register User
+
 export const register = async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (user) {
@@ -34,15 +35,32 @@ export const login = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
     const isMatch = await bcrypt.compare(req.body.password, user.password);
-    const token = jwt.sign({ userId: user._id }, "your-secret-key", {
-      expiresIn: "1h",
-    });
     if (isMatch) {
-      return res.status(200).json({ success: true, message: "Login success" });
+      const payload = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      };
+      const token = jwt.sign(payload, jwtToken, {
+        expiresIn: "1d",
+      });
+      return res.status(200).json({
+        success: true,
+        message: "Login success",
+        data: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+        },
+        token: token,
+      });
     } else {
-      return res
-        .status(400)
-        .json({ token, success: false, message: "Wrong password" });
+      return res.status(400).json({
+        success: false,
+        message: "Wrong password",
+      });
     }
   } else {
     return res
