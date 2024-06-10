@@ -74,14 +74,3 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   return res.status(200).json({ success: true, message: "Logout success" });
 };
-
-// Get User
-
-export const getUser = async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (user) {
-    return res.status(200).json({ user });
-  } else {
-    return res.status(404).json({ message: "User not found" });
-  }
-};

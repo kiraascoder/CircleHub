@@ -4,10 +4,10 @@ Content-Type: application/json
 # { name, email, password, phoneNumber } = req.body;
 # Create User
 {
-    "name" : "Irmansyah Muslimin",
-    "email": "testing0522222@gmail.com",
-    "password" : "1234513213",
-    "phoneNumber" : "08234567801"
+    "name" : "Irmansyah",
+    "email": "testing05@gmail.com",
+    "password" : "123",
+    "phoneNumber" : "0823456323"
 }
 
 ###
