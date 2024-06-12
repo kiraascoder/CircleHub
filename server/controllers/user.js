@@ -72,7 +72,7 @@ export const login = async (req, res) => {
 // Update User
 
 export const updateUser = async (req, res) => {
-  if (req.user.id === req.params.id) {
+  if (req.body.userId === req.params.id) {
     if (req.body.password) {
       try {
         const salt = await bcrypt.genSalt(10);
@@ -81,10 +81,14 @@ export const updateUser = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
       }
     }
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    return res.status(200).json({ success: true, data: user });
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
+      return res.status(200).json({ success: true, data: user });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
   }
   return res
     .status(400)
