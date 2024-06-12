@@ -69,8 +69,29 @@ export const login = async (req, res) => {
   }
 };
 
-// Logout
+// Update User
 
+export const updateUser = async (req, res) => {
+  if (req.user.id === req.params.id) {
+    if (req.body.password) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        req.body.password = await bcrypt.hash(req.body.password, salt);
+      } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+      }
+    }
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    return res.status(200).json({ success: true, data: user });
+  }
+  return res
+    .status(400)
+    .json({ success: false, message: "You can update only your account" });
+};
+
+// Log Out
 export const logout = async (req, res) => {
   return res.status(200).json({ success: true, message: "Logout success" });
 };
