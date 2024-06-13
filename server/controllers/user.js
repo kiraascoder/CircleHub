@@ -2,8 +2,8 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { jwtToken } from "../index.js";
-// Register User
 
+// Register User
 export const register = async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (user) {
@@ -30,7 +30,6 @@ export const register = async (req, res) => {
 };
 
 // Login
-
 export const login = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
@@ -70,7 +69,6 @@ export const login = async (req, res) => {
 };
 
 // Update User
-
 export const updateUser = async (req, res) => {
   if (req.body.userId === req.params.id) {
     if (req.body.password) {
@@ -98,4 +96,14 @@ export const updateUser = async (req, res) => {
 // Log Out
 export const logout = async (req, res) => {
   return res.status(200).json({ success: true, message: "Logout success" });
+};
+
+// Get User
+export const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    return res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
 };

@@ -20,11 +20,25 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-    "email": "testing0522222@gmail.com",
-    "password" : "1234513213"
+    "email": "testing05@gmail.com",
+    "password" : "123"
 }
 
 ### Logout
 
 DELETE http://localhost:3000/api/logout
 Content-Type: application/json
+
+### Update User 
+
+PUT http://localhost:3000/api/6669a8b49afdd5a6ecdd0324
+Content-Type: application/json
+
+{
+    "name" : "K Hanma",
+    "userId" : "6669a8b49afdd5a6ecdd0324"
+} 
+
+### get User
+
+GET http://localhost:3000/api/6669a8b49afdd5a6ecdd0324
