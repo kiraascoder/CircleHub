@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
-import { router } from "./routes/route.js";
+import authRouter from "./routes/auth.js";
+import userRouter from "./routes/users.js";
 
 dotenv.config(); // Load the environment variables
 const app = express();
@@ -11,7 +12,9 @@ const port = 3000;
 export const jwtToken = process.env.JWT_SECRET;
 app.use(express.json());
 app.use(cors({ origin: true }));
-app.use("/api", router);
+
+app.use("/api/users", userRouter);
+app.use("/api/auth", authRouter);
 
 mongoose
   .connect(url, {
