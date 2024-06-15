@@ -1,12 +1,12 @@
-POST http://localhost:3000/api/register
+POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 # { name, email, password, phoneNumber } = req.body;
 # Create User
 {
-    "name" : "Irmansyah",
-    "email": "testing05@gmail.com",
-    "password" : "123",
+    "name" : "K Hanma",
+    "email": "testing050503@gmail.com",
+    "password" : "1234",
     "phoneNumber" : "0823456323"
 }
 

@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import mongoose from "mongoose";
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
+import postRouter from "./routes/posts.js";
 
 dotenv.config(); // Load the environment variables
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors({ origin: true }));
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/posts", postRouter);
 
 mongoose
   .connect(url, {

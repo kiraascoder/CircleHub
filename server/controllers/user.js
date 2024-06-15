@@ -107,3 +107,77 @@ export const getUser = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// Delete User
+export const deleteUser = async (req, res) => {
+  if (req.body.userId === req.params.id) {
+    try {
+      const user = await User.findByIdAndDelete(req.params.id);
+      return res.status(200).json({ success: true, data: user });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  } else {
+    return res
+      .status(400)
+      .json({ success: false, message: "You can delete only your account" });
+  }
+};
+
+// Follow User
+export const followUser = async (req, res) => {
+  if (req.body.userId !== req.params.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+      if (!user.followers.includes(req.body.userId)) {
+        // Check if the user is already followed
+        await user.updateOne({ $push: { followers: req.body.userId } });
+        await currentUser.updateOne({ $push: { followings: req.params.id } });
+        return res
+          .status(200)
+          .json({ success: true, message: "User followed" });
+      } else {
+        // If the user is already followed
+        return res
+          .status(400)
+          .json({ success: false, message: "User already followed" });
+      }
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  } else {
+    return res
+      .status(400)
+      .json({ success: false, message: "You can't follow yourself" });
+  }
+};
+
+// Unfollow User
+export const unfollowUser = async (req, res) => {
+  if (req.body.userId !== req.params.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+      if (user.followers.includes(req.body.userId)) {
+        // Check if the user is already followed
+        await user.updateOne({ $pull: { followers: req.body.userId } });
+        await currentUser.updateOne({ $pull: { followings: req.params.id } });
+        return res
+          .status(200)
+          .json({ success: true, message: "User unfollowed" });
+      } else {
+        // If the user is already followed
+        return res
+          .status(400)
+          .json({ success: false, message: "User not followed" });
+      }
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  } else {
+    return res
+      .status(400)
+      .json({ success: false, message: "You can't unfollow yourself" });
+  }
+};
