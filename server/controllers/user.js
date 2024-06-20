@@ -1,7 +1,12 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { StreamChat } from "stream-chat";
 import { jwtToken } from "../index.js";
+
+const api_key = process.env.STREAM_API_KEY;
+const api_secret = process.env.STREAM_API_SECRET;
+const app_id = process.env.STREAM_APP_ID;
 
 // Register User
 export const register = async (req, res) => {
@@ -20,9 +25,12 @@ export const register = async (req, res) => {
         password: hashedPassword,
         phoneNumber: req.body.phoneNumber,
       });
-
+      const serverClient = StreamChat.getInstance(api_key, api_secret, app_id);
+      const token = serverClient.createToken(req.body.email);
       await user.save();
-      return res.status(200).json({ success: true, message: "User created" });
+      return res
+        .status(200)
+        .json({ success: true, message: "User created", token });
     } catch (error) {
       return res.status(500).json({ success: false, message: error.message });
     }
