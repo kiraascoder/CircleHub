@@ -6,11 +6,19 @@ import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
 import postRouter from "./routes/posts.js";
 
-dotenv.config(); // Load the environment variables
 const app = express();
+
+// ENV
+dotenv.config(); // Load the environment variables
 const url = process.env.DATABASE_URL;
-const port = 3000;
+export const api_key = process.env.STREAM_API_KEY;
+export const api_secret = process.env.STREAM_API_SECRET;
+export const app_id = process.env.STREAM_APP_ID;
 export const jwtToken = process.env.JWT_SECRET;
+
+// PORT
+const port = 3000;
+
 app.use(express.json());
 app.use(cors({ origin: true }));
 
