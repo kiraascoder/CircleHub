@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -39,13 +41,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    desc : {
+    desc: {
       type: String,
-      max: 50
+      max: 50,
     },
-    from  : {
+    from: {
       type: String,
-      max: 50
+      max: 50,
     },
   },
   { timestamps: true }
