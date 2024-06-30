@@ -12,7 +12,7 @@ const Register = () => {
                 data-aos-duration="1500"
                 className="text-headingColor font-[600] text-[100px]"
               >
-                Cirlce Hub
+                Circle Hub
               </h5>
               <p className="flex gap-2 text-headingColor font-[500] text-[15px] leading-7 sm:pl-5 sm:pr-10 ">
                 Circle Hub adalah aplikasi chat komunitas yang bertujuan untuk
@@ -26,7 +26,8 @@ const Register = () => {
                 <a className="flex gap-6" href="#contact">
                   <p className="mt-2 pl-5">Got Any Problem?</p>
                   <button className="bg-primaryColor text-white font-[500] flex items-center gap-2 hover:bg-smallTextColor ease-in duration-300 py-2 px-4 rounded-[8px]">
-                    <i className="ri-mail-line"></i> <a href="" className=""></a>Contact Admin
+                    <i className="ri-mail-line"></i>{" "}
+                    <a href="" className=""></a>Contact Admin
                   </button>
                 </a>
               </div>

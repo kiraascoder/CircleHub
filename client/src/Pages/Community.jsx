@@ -1,11 +1,12 @@
 import React from "react";
 import Layout from "../components/Layout";
+import Sidebar from "../components/Sidebar";
 
 const Community = () => {
   return (
     <div>
       <Layout>
-        <p>Community</p>
+     
       </Layout>
     </div>
   );

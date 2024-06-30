@@ -8,6 +8,7 @@ import Community from "./Pages/Community";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Homepage from "./Pages/Homepage";
+import Friends from "./Pages/Friends";
 
 const App = () => {
   useEffect(() => {
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/me" element={<Me />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/friends" element={<Friends />} />
         </Routes>
       </BrowserRouter>
     </div>

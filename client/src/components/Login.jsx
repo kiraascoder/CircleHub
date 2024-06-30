@@ -12,7 +12,7 @@ const Login = () => {
                 data-aos-duration="1500"
                 className="text-headingColor font-[600] text-[100px]"
               >
-                Cirlce Hub
+                Circle Hub
               </h5>
               <p className="flex gap-2 text-headingColor font-[500] text-[15px] leading-7 sm:pl-5 sm:pr-10 ">
                 Circle Hub adalah aplikasi chat komunitas yang bertujuan untuk

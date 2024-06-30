@@ -1,15 +1,13 @@
 import React from "react";
 import Layout from "../components/Layout";
 import Sidebar from "../components/Sidebar";
-const Homepage = () => {
+import RoomChat from "../components/RoomChat";
+const Friends = () => {
   return (
     <div>
-      <Layout>
-      
-        <p>Homepage</p>
-      </Layout>
+      <Layout></Layout>
     </div>
   );
 };
 
-export default Homepage;
+export default Friends;
