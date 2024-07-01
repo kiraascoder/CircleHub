@@ -5,7 +5,16 @@ import RoomChat from "../components/RoomChat";
 const Friends = () => {
   return (
     <div>
-      <Layout></Layout>
+      <Layout />
+      <div
+        className="
+      flex"
+      >
+        <Sidebar />
+        <div className="grow">
+          <p>Testing</p>
+        </div>
+      </div>
     </div>
   );
 };
