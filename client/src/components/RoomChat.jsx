@@ -1,11 +1,12 @@
 import React from "react";
 
 const RoomChat = () => {
-  const el = document.getElementById("messages");
-  el.scrollTop = el.scrollHeight;
+  // const el = document.getElementById("messages");
+  // el.scrollTop = el.scrollHeight;
   return (
-    <div>
-      <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
+    <div className="chat__wrapper">      
+      <p>Testing</p>
+      {/* <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen">
         <div className="flex sm:items-center justify-between py-3">
           <div className="relative flex items-center space-x-4">
             <div className="relative">
@@ -224,7 +225,7 @@ const RoomChat = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
