@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 
 const Navbar = () => {
   const headerRef = useRef(null);
-  const menuRef = useRef(null);
 
   const handleScroll = () => {
     const scrollTop =
@@ -25,22 +24,6 @@ const Navbar = () => {
       window.removeEventListener("scroll", scrollHandler);
     };
   }, []);
-
-  const handleClick = (e) => {
-    e.preventDefault();
-    const targetAttr = e.target.getAttribute("href");
-    const targetElement = document.querySelector(targetAttr);
-
-    if (targetElement) {
-      // Memeriksa apakah elemen target ditemukan
-      const location = targetElement.offsetTop;
-
-      window.scrollTo({
-        top: location - 80,
-        left: 0,
-      });
-    }
-  };
 
   return (
     <div>

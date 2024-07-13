@@ -4,41 +4,84 @@ import jwt from "jsonwebtoken";
 import { StreamChat } from "stream-chat";
 import { jwtToken } from "../index.js";
 import { api_key, api_secret, app_id } from "../index.js";
+import fs from "fs";
+import path from "path";
+import upload from "../utils/upload.js";
+import { HttpError } from "../models/errorModel.js";
 
 // Register User
 export const register = async (req, res) => {
-  let user = await User.findOne({ email: req.body.email });
+  const { name, email, password, password2, phoneNumber } = req.body;
+
+  // Check if all required fields are filled
+  if (!name || !email || !password || !password2) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please fill all inputs" });
+  }
+
+  // Check if the user already exists
+  let user = await User.findOne({ email });
   if (user) {
     return res
       .status(400)
       .json({ success: false, message: "User already exists" });
-  } else {
-    try {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(req.body.password, salt);
-      const user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword,
-        phoneNumber: req.body.phoneNumber,
-      });
-      const serverClient = StreamChat.getInstance(api_key, api_secret, app_id);
-      const token = serverClient.createToken(req.body.email);
-      await user.save();
-      return res
-        .status(200)
-        .json({ success: true, message: "User created", token });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
-    }
+  }
+
+  // Validate password length
+  if (password?.trim().length < 8) {
+    return res.status(400).json({
+      success: false,
+      message: "Password too short, Please Try Again",
+    });
+  }
+
+  // Check if passwords match
+  if (password !== password2) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Passwords didn't match" });
+  }
+
+  try {
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create new user
+    user = new User({
+      name: name.trim(),
+      email: email.trim(),
+      password: hashedPassword,
+      phoneNumber,
+    });
+
+    // Generate token for the user
+    const serverClient = StreamChat.getInstance(api_key, api_secret, app_id);
+    const token = serverClient.createToken(email);
+
+    // Save user to database
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "User created", token });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
-
 // Login
 export const login = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please fill all inputs" });
+  }
+  const newEmail = email.toLowerCase();
+  const user = await User.findOne({ email: newEmail });
   if (user) {
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
       const payload = {
         id: user._id,
@@ -74,28 +117,72 @@ export const login = async (req, res) => {
 };
 
 // Update User
-export const updateUser = async (req, res) => {
-  if (req.body.userId === req.params.id) {
-    if (req.body.password) {
-      try {
-        const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
-      } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
-      }
+export const updateUser = async (req, res, next) => {
+  try {
+    const {
+      name,
+      email,
+      currentPassword,
+      newPassword,
+      confirmPassword,
+      desc,
+      phoneNumber,
+    } = req.body;
+
+    // Validasi input
+    if (
+      !name ||
+      !email ||
+      !currentPassword ||
+      !newPassword ||
+      !confirmPassword ||
+      !desc ||
+      !phoneNumber
+    ) {
+      return next(new HttpError("Please fill all inputs", 422));
     }
-    try {
-      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
-      return res.status(200).json({ success: true, data: user });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
+
+    // Cari user berdasarkan ID
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return next(new HttpError("User not found", 403));
     }
+
+    // Cek email apakah sudah digunakan oleh user lain
+    const checkEmail = await User.findOne({ email });
+    if (checkEmail && checkEmail._id.toString() !== req.user.id.toString()) {
+      return next(new HttpError("Email already exists", 422));
+    }
+
+    // Validasi password saat ini
+    const validatePassword = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!validatePassword) {
+      return next(new HttpError("Invalid current password", 422));
+    }
+
+    // Validasi kesamaan password baru dan konfirmasi password
+    if (newPassword !== confirmPassword) {
+      return next(new HttpError("New passwords do not match", 422));
+    }
+
+    // Hash password baru
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update user dengan data baru
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, email, password: hashedPassword, desc, phoneNumber },
+      { new: true }
+    );
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    return next(new HttpError(error.message, 500));
   }
-  return res
-    .status(400)
-    .json({ success: false, message: "You can update only your account" });
 };
 
 // Log Out
@@ -104,12 +191,16 @@ export const logout = async (req, res) => {
 };
 
 // Get User
-export const getUser = async (req, res) => {
+export const getUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
-    return res.status(200).json({ success: true, data: user });
+    const { id } = req.params;
+    const user = await User.findById(id).select("-password");
+    if (!user) {
+      return next(new HttpError("UserNot Found.", 404));
+    }
+    res.status(200).json(user);
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return next(new HttpError({ error }));
   }
 };
 
@@ -185,4 +276,44 @@ export const unfollowUser = async (req, res) => {
       .status(400)
       .json({ success: false, message: "You can't unfollow yourself" });
   }
+};
+
+export const changeAvatar = async (req, res, next) => {
+  const upload = configureMulter("avatar");
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
+
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return next(new HttpError("User not found", 404));
+      }
+
+      // Hapus avatar lama jika ada
+      if (user.avatar) {
+        fs.unlink(user.avatar, (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Failed to delete old avatar", unlinkErr);
+          }
+        });
+      }
+      if (!req.file) {
+        return res
+          .status(400)
+          .json({ success: false, message: "No file uploaded" });
+      }
+
+      // Simpan path avatar baru ke user
+      user.avatar = req.file.path;
+      await user.save();
+
+      res
+        .status(200)
+        .json({ success: true, message: "Avatar changed successfully" });
+    } catch (error) {
+      return next(new HttpError(error.message, 500));
+    }
+  });
 };

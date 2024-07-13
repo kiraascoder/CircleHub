@@ -21,7 +21,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/homepage" element={<Homepage />} />
-          <Route path="/signup" element={<Register />} />
+          <Route path="/api/users/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/me" element={<Me />} />
           <Route path="/community" element={<Community />} />

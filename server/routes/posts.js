@@ -2,23 +2,27 @@ import express from "express";
 import {
   createPost,
   deletePost,
-  getPost,
+  getPosts,
   updatePost,
   likePost,
-  getTimelinePosts,
+  getPost,
+  getUserPosts,
 } from "../controllers/posts.js";
+import { authMiddleware } from "../middleware/authUser.js";
 
 const router = express.Router();
 
-router.post("/", createPost);
+router.post("/", authMiddleware, createPost);
 
-router.put("/:id", updatePost);
+router.put("/:id", authMiddleware, updatePost);
 
-router.delete("/:id", deletePost);
+router.delete("/:id", authMiddleware, deletePost);
+
+router.get("/users/:id", getUserPosts);
 
 router.get("/:id", getPost);
 
-router.get("/timeline/all", getTimelinePosts);
+router.get("/", getPosts);
 
 router.put("/:id/like", likePost);
 

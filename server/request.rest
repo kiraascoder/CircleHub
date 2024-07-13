@@ -4,9 +4,10 @@ Content-Type: application/json
 # { name, email, password, phoneNumber } = req.body;
 # Create User
 {
-    "name" : "K Hunt",
-    "email": "testrrrr@gmail.com",
-    "password" : "12",
+    "name" : "K Hunta",
+    "email": "tesr@gmail.com",
+    "password" : "122321312321321",
+    "password2" : "122321312321321",
     "phoneNumber" : "082344211421"
 }
 
@@ -20,8 +21,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "testing05@gmail.com",
-    "password" : "123"
+    "email": "tesr@gmail.com",
+    "password" : "122321312321321"
 }
 
 ### Logout
@@ -41,4 +42,5 @@ Content-Type: application/json
 
 ### get User
 
-GET http://localhost:3000/api/6669a8b49afdd5a6ecdd0324
+GET http://localhost:3000/api/:668389e6093e4c1810c8a31c
+

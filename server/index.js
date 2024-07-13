@@ -7,27 +7,34 @@ import userRouter from "./routes/users.js";
 import postRouter from "./routes/posts.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import { notFound } from "./middleware/errorMiddleware.js";
+import { errorMiddleware } from "./middleware/errorMiddleware.js";
+
 const app = express();
 
 // ENV
 dotenv.config(); // Load the environment variables
+
 const url = process.env.DATABASE_URL;
 export const api_key = process.env.STREAM_API_KEY;
 export const api_secret = process.env.STREAM_API_SECRET;
 export const app_id = process.env.STREAM_APP_ID;
 export const jwtToken = process.env.JWT_SECRET;
 
-// PORT
-const port = 3000;
-
 app.use(express.json());
 app.use(cors({ origin: true }));
 
-// Router
+// static File
+app.use("/uploads", express.static("uploads"));
 
+// Router
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
+
+// Error Handler
+app.use(notFound);
+app.use(errorMiddleware);
 
 // Mongo Session Store
 app.use(
@@ -53,6 +60,6 @@ mongoose
   .catch((err) => console.log(err));
 
 // Listen
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });

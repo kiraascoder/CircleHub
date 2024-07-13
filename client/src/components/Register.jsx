@@ -1,5 +1,35 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+
 const Register = () => {
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password2: "",
+  });
+
+  const [error, setError] = useState("");
+  const navigate = useNavigate("");
+
+  const changeInputHandler = (e) => {
+    setUserData((prevState) => {
+      return { ...prevState, [e.target.name]: e.target.value };
+    });
+  };
+
+  const registerUser = async (e) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const response = await axios.post("");
+    } catch (error) {
+      setError(error.response.data.message);
+    }
+  };
+
   return (
     <div>
       <section className="pt-0" id="main">
@@ -44,8 +74,9 @@ const Register = () => {
                         Silahkan Daftar Jika Belum memiliki Akun
                       </p>
                     </div>
-
-                    <form className="w-full">
+                    {/* Form Register */}
+                    <form className="w-full" onSubmit={registerUser}>
+                      <p className="text-red-500">{error}</p>
                       <div className="mb-10 space-y-3">
                         <div className="space-y-1">
                           <div className="space-y-2">

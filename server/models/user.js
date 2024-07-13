@@ -19,13 +19,9 @@ const userSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      required: true,
+      required: false,
     },
     profilePicture: {
-      type: String,
-      default: "",
-    },
-    coverPicture: {
       type: String,
       default: "",
     },
@@ -37,10 +33,6 @@ const userSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
     desc: {
       type: String,
       max: 50,
@@ -48,6 +40,10 @@ const userSchema = new mongoose.Schema(
     from: {
       type: String,
       max: 50,
+    },
+    posts: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }
