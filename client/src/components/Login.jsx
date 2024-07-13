@@ -65,6 +65,7 @@ const Login = () => {
                               id="password"
                               placeholder="*******"
                               name="passowrd"
+                              type="password"
                             />
                           </div>
                         </div>

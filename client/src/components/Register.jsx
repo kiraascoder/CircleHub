@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
 
 const Register = () => {
   const [userData, setUserData] = useState({
@@ -12,7 +11,7 @@ const Register = () => {
   });
 
   const [error, setError] = useState("");
-  const navigate = useNavigate("");
+  const navigate = useNavigate();
 
   const changeInputHandler = (e) => {
     setUserData((prevState) => {
@@ -24,7 +23,17 @@ const Register = () => {
     e.preventDefault();
     setError("");
     try {
-      const response = await axios.post("");
+      const response = await axios.post(
+        "http://localhost:5000/api/auth//register",
+        userData
+      );
+      const newUser = await response.data;
+      console.log(newUser);
+      if (!newUser) {
+        setError("Couldn't register user. Please Try Again");
+      } else {
+        navigate("/login");
+      }
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -56,8 +65,7 @@ const Register = () => {
                 <a className="flex gap-6" href="#contact">
                   <p className="mt-2 pl-5">Got Any Problem?</p>
                   <button className="bg-primaryColor text-white font-[500] flex items-center gap-2 hover:bg-smallTextColor ease-in duration-300 py-2 px-4 rounded-[8px]">
-                    <i className="ri-mail-line"></i>{" "}
-                    <a href="" className=""></a>Contact Admin
+                    <i className="ri-mail-line"></i> <span>Contact Admin</span>
                   </button>
                 </a>
               </div>
@@ -88,6 +96,8 @@ const Register = () => {
                               id="name"
                               placeholder="Your Name"
                               name="name"
+                              value={userData.name}
+                              onChange={changeInputHandler}
                             />
                             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                               Email
@@ -97,6 +107,8 @@ const Register = () => {
                               id="email"
                               placeholder="main@email.com"
                               name="email"
+                              value={userData.email}
+                              onChange={changeInputHandler}
                             />
                             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                               Password
@@ -105,7 +117,10 @@ const Register = () => {
                               className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                               id="password"
                               placeholder="*******"
-                              name="passowrd"
+                              name="password"
+                              type="password"
+                              value={userData.password}
+                              onChange={changeInputHandler}
                             />
                             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                               Confirm Password
@@ -114,7 +129,10 @@ const Register = () => {
                               className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                               id="confpassword"
                               placeholder="*******"
-                              name="confpassowrd"
+                              name="password2"
+                              type="password"
+                              value={userData.password2}
+                              onChange={changeInputHandler}
                             />
                           </div>
                         </div>
@@ -123,16 +141,16 @@ const Register = () => {
                           className="ring-offset-background focus-visible:ring-ring flex h-10 w-full items-center justify-center whitespace-nowrap rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-black/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                           type="submit"
                         >
-                          Login
+                          Register
                         </button>
                       </div>
                     </form>
 
                     <div className="text-center items-center justify-center flex gap-2">
-                      Already Sign In?
-                      <a className="text-blue-500" href="/login">
+                      Already have an account?
+                      <Link className="text-blue-500" to="/login">
                         Login
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>

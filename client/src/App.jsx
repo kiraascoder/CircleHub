@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import Aos from "aos";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Cookies from "universal-cookie";
-
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Me from "./Pages/Me";
@@ -21,7 +20,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/homepage" element={<Homepage />} />
-          <Route path="/api/users/register" element={<Register />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/me" element={<Me />} />
           <Route path="/community" element={<Community />} />
