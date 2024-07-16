@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useContext } from "react";
+import { UserContext } from "../context/userContext";
 
 const Navbar = () => {
   const headerRef = useRef(null);
+  const { currentUser } = useContext(UserContext);
 
   const handleScroll = () => {
     const scrollTop =
@@ -47,20 +49,26 @@ const Navbar = () => {
             {/* End Logo */}
             {/* Menu Kanan  */}
             <div className="flex items-center gap-4">
-              {" "}
-              <a
-                href="
-            /login"
-              >
-                <button className="flex items-center gap-2 text-smallTextColor font-[600]  py-2 px-4 rounded-[8px] max-h-[50px] hover:bg-smallTextColor hover:text-white hover:font-[500] ease-in duration-300 text-lg ">
-                  <i className="ri-send-plane-line"></i>Log out
-                </button>
-              </a>
-              <a href="/me">
-                <button className="flex items-center gap-2 text-smallTextColor font-[600] border border-solid border-smallTextColor py-2 px-4 rounded-[8px] max-h-[40px] hover:bg-smallTextColor hover:text-white hover:font-[500] ease-in duration-300 text-sm ">
-                  <i className="ri-send-plane-line"></i>My Account
-                </button>
-              </a>
+              {currentUser ? (
+                <>
+                  <a href="/me">
+                    <button className="flex items-center gap-2 text-smallTextColor font-[600] border border-solid border-smallTextColor py-2 px-4 rounded-[8px] max-h-[40px] hover:bg-smallTextColor hover:text-white hover:font-[500] ease-in duration-300 text-sm ">
+                      <i className="ri-user-line"></i>My Account
+                    </button>
+                  </a>
+                  <a href="/logout">
+                    <button className="flex items-center gap-2 text-smallTextColor font-[600] py-2 px-4 rounded-[8px] max-h-[50px] hover:bg-smallTextColor hover:text-white hover:font-[500] ease-in duration-300 text-lg ">
+                      <i className="ri-logout-box-line"></i>Log out
+                    </button>
+                  </a>
+                </>
+              ) : (
+                <a href="/login">
+                  <button className="flex items-center gap-2 text-smallTextColor font-[600] py-2 px-4 rounded-[8px] max-h-[50px] hover:bg-smallTextColor hover:text-white hover:font-[500] ease-in duration-300 text-lg ">
+                    <i className="ri-login-box-line"></i>Login
+                  </button>
+                </a>
+              )}
             </div>
             {/* Akhir Menu Kanan  */}
           </div>

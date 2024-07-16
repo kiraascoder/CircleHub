@@ -1,18 +1,20 @@
 import React from "react";
+import Community from "../components/Community";
 import Sidebar from "../components/Sidebar";
-import Home from "../components/Home";
-const Homepage = () => {
+
+const Communities = () => {
   return (
     <div>
       <div
         className="
-      flex"
+      flex
+      "
       >
         <Sidebar />
-        <Home />
+        <Community />
       </div>
     </div>
   );
 };
 
-export default Homepage;
+export default Communities;

@@ -1,5 +1,42 @@
-import React from "react";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../context/userContext";
+import axios from "axios";
+
 const Login = () => {
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const { setCurrentUser } = useContext(UserContext);
+
+  const changeInputHandler = (e) => {
+    setUserData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const loginUser = async (e) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        userData
+      );
+      const user = response.data;
+      setCurrentUser(user);
+      navigate("/homepage");
+    } catch (error) {
+      setError(error.response?.data?.message || "An error occurred");
+    }
+  };
+
   return (
     <div>
       <section className="pt-0" id="main">
@@ -44,7 +81,8 @@ const Login = () => {
                       </p>
                     </div>
 
-                    <form className="w-full">
+                    <form className="w-full" onSubmit={loginUser}>
+                      <p className="text-red-500">{error}</p>
                       <div className="mb-10 space-y-3">
                         <div className="space-y-1">
                           <div className="space-y-2">
@@ -56,6 +94,8 @@ const Login = () => {
                               id="email"
                               placeholder="mail@example.com"
                               name="email"
+                              value={userData.email}
+                              onChange={changeInputHandler}
                             />
                             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                               Password
@@ -64,8 +104,10 @@ const Login = () => {
                               className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                               id="password"
                               placeholder="*******"
-                              name="passowrd"
+                              name="password"
                               type="password"
+                              value={userData.password}
+                              onChange={changeInputHandler}
                             />
                           </div>
                         </div>
@@ -81,7 +123,7 @@ const Login = () => {
 
                     <div className="text-center items-center justify-center flex gap-2">
                       Not Registered Yet?
-                      <a className="text-blue-500" href="/signup">
+                      <a className="text-blue-500" href="/register">
                         Create one
                       </a>
                     </div>

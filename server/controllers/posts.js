@@ -3,31 +3,38 @@ import User from "../models/user.js";
 import path from "path";
 import upload from "../utils/upload.js";
 import { HttpError } from "../models/errorModel.js";
-import { URL } from "url";
+import { fileURLToPath } from "url";
 
-const __dirname = new URL(".", import.meta.url).pathname;
+// Konversi URL modul menjadi file path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Create Post
 export const createPost = async (req, res, next) => {
   upload(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ success: false, message: err });
+      return res.status(400).json({ success: false, message: err.message });
     }
 
     const { title, desc, category } = req.body;
 
-    if (!title || !desc || !category || !req.file) {
+    if (!title || !desc || !category) {
       return next(new HttpError("Fill in all fields", 422));
     }
 
     try {
-      const newPost = await Post.create({
+      const newPostData = {
         title,
         category,
-        description: desc,
-        img: req.file.path,
+        desc: desc,
         creator: req.user.id,
-      });
+      };
+
+      if (req.file) {
+        newPostData.img = req.file.path;
+      }
+
+      const newPost = await Post.create(newPostData);
 
       if (!newPost) {
         return next(new HttpError("Post couldn't be created", 422));
