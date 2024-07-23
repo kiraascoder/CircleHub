@@ -8,7 +8,7 @@ const Homepage = () => {
         className="
       flex"
       >
-        <Sidebar />
+        <Sidebar  />
         <Home />
       </div>
     </div>

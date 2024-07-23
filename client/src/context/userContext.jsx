@@ -4,12 +4,14 @@ import { createContext, useEffect, useState } from "react";
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(
-    JSON.parse(localStorage.getItem("user"))
-  );
+  // Inisialisasi state dengan data dari localStorage, jika ada
+  const [currentUser, setCurrentUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   useEffect(() => {
-    console.log("currentUser changed:", currentUser);
+    // Menyimpan currentUser ke localStorage jika tidak null
     if (currentUser === null) {
       localStorage.removeItem("user");
     } else {

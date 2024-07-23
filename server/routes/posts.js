@@ -4,9 +4,11 @@ import {
   deletePost,
   getPosts,
   updatePost,
-  likePost,
+  // likePost,
   getPost,
   getUserPosts,
+  // getTimelinePosts,
+  getFollowingPosts,
 } from "../controllers/posts.js";
 import { authMiddleware } from "../middleware/authUser.js";
 
@@ -22,8 +24,10 @@ router.get("/users/:id", getUserPosts);
 
 router.get("/:id", getPost);
 
+router.get("/followings/:id/posts", getFollowingPosts);
+
 router.get("/", getPosts);
 
-router.put("/:id/like", likePost);
+// router.put("/:id/like", likePost);
 
 export default router;

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import PostAuthor from "./PostAuthor";
 
 const SinglePost = ({
@@ -9,9 +10,58 @@ const SinglePost = ({
   img,
   authorID,
   createdAt,
+  onDelete,
+  currentUserName,
 }) => {
+  const [author, setAuthor] = useState({});
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  useEffect(() => {
+    const fetchAuthor = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/users/${authorID}`
+        );
+        setAuthor(response.data);
+      } catch (error) {
+        console.error("Error fetching author:", error);
+      }
+    };
+    fetchAuthor();
+  }, [authorID]);
+
+  useEffect(() => {
+    const checkFollowingStatus = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/users/${currentUserName}/following/${authorID}`
+        );
+        setIsFollowing(response.data.isFollowing);
+      } catch (error) {
+        console.error("Error checking following status:", error);
+      }
+    };
+    checkFollowingStatus();
+  }, [currentUserName, authorID]);
+
   const imageUrl = img ? `http://localhost:5000/uploads/${img}` : null;
-  console.log("Image URL:", imageUrl); // Tambahkan log ini
+
+  const handleDeleteClick = () => {
+    if (window.confirm("Are you sure you want to delete this post?")) {
+      onDelete(postID);
+    }
+  };
+
+  const handleFollowClick = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/users/${currentUserName}/follow/${authorID}`
+      );
+      setIsFollowing(response.data.isFollowing);
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
 
   return (
     <div className="flex bg-white shadow-lg rounded-lg md:max-w-2xl mb-2">
@@ -22,8 +72,12 @@ const SinglePost = ({
           alt="avatar"
         />
 
-        <div>
-          <PostAuthor authorID={authorID} createdAt={createdAt} />
+        <div className="flex-1">
+          <PostAuthor
+            authorID={authorID}
+            createdAt={createdAt}
+            postID={postID}
+          />
           <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
           <p className="text-sm text-gray-600">{category}</p>
           <p className="mt-3 text-gray-700 text-sm">{desc}</p>
@@ -31,7 +85,6 @@ const SinglePost = ({
             <div className="mt-3">
               <img
                 src={imageUrl}
-                alt={title}
                 className="w-full h-auto"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -73,6 +126,22 @@ const SinglePost = ({
               </svg>
               <span>8</span>
             </div>
+            {currentUserName === author.name && (
+              <button
+                onClick={handleDeleteClick}
+                className="ml-auto px-3 py-1 text-sm font-semibold text-white bg-red-600 rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
+            )}
+            {currentUserName !== author.name && !isFollowing && (
+              <button
+                onClick={handleFollowClick}
+                className="ml-auto px-3 py-1 text-sm font-semibold text-white bg-blue-600 rounded hover:bg-blue-700"
+              >
+                Follow
+              </button>
+            )}
           </div>
         </div>
       </div>

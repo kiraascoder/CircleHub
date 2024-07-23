@@ -1,15 +1,26 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { Link, useNavigate } from "react-router-dom";
 
 const CreatePost = ({ onClose }) => {
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Uncategorized");
   const [desc, setDesc] = useState("");
-  const [img, setImg] = useState("");
+  const [img, setImg] = useState(null);
+  const [token, setToken] = useState("");
 
-  const module = {
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
+
+  const modules = {
     toolbar: [
       [{ header: [1, 2, false] }],
       ["bold", "italic", "underline", "strike", "blockquote"],
@@ -24,7 +35,7 @@ const CreatePost = ({ onClose }) => {
     ],
   };
 
-  const format = [
+  const formats = [
     "header",
     "bold",
     "italic",
@@ -37,6 +48,54 @@ const CreatePost = ({ onClose }) => {
     "link",
     "image",
   ];
+
+  const POST_CATEGORIES = [
+    "Art",
+    "Comics",
+    "Crafts",
+    "Dance",
+    "Design",
+    "Fashion",
+    "Film",
+    "Food",
+    "Games",
+    "Journalism",
+    "Music",
+    "Photography",
+    "Technology",
+    "Theater",
+    "Uncategorized",
+  ];
+
+  const createPost = async (e) => {
+    e.preventDefault();
+    const postData = new FormData();
+    postData.append("title", title);
+    postData.append("category", category);
+    postData.append("desc", desc);
+    if (img) postData.append("img", img);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/posts",
+        postData,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 201) {
+        navigate("/homepage");
+        onClose(); // Menutup modal setelah navigasi
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
   return (
     <div>
       <div
@@ -46,11 +105,13 @@ const CreatePost = ({ onClose }) => {
         className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
       >
         <div className="relative p-4 w-full max-w-md max-h-full">
-          <div className="relative bg-white rounded-lg shadow ">
+          <div className="relative bg-white rounded-lg shadow">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-black">
-                Postingan Baru
-              </h3>
+              <Link to="/createpost">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-black">
+                  Postingan Baru
+                </h3>
+              </Link>
               <button
                 type="button"
                 className="text-gray-900 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -75,8 +136,9 @@ const CreatePost = ({ onClose }) => {
                 <span className="sr-only">Close</span>
               </button>
             </div>
-            <form className="p-4 md:p-5">
+            <form className="p-4 md:p-5" onSubmit={createPost}>
               <div className="grid gap-4 mb-4 grid-cols-2">
+                {error && <p className="text-red-500 col-span-2">{error}</p>}
                 <div className="col-span-2">
                   <label
                     htmlFor="name"
@@ -92,7 +154,7 @@ const CreatePost = ({ onClose }) => {
                     id="name"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-100 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Masukkan judul postingan"
-                    required="true"
+                    required
                   />
                 </div>
 
@@ -109,7 +171,13 @@ const CreatePost = ({ onClose }) => {
                     onChange={(e) => setCategory(e.target.value)}
                     name="category"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  ></select>
+                  >
+                    {POST_CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="col-span-2">
@@ -123,10 +191,9 @@ const CreatePost = ({ onClose }) => {
                     type="file"
                     onChange={(e) => setImg(e.target.files[0])}
                     name="image"
-                    accept="png,jpg,jpeg"
+                    accept=".png,.jpg,.jpeg"
                     id="image"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    required=""
                   />
                 </div>
 
@@ -138,10 +205,10 @@ const CreatePost = ({ onClose }) => {
                     Deskripsi
                   </label>
                   <ReactQuill
-                    modules={module}
+                    modules={modules}
                     value={desc}
                     onChange={setDesc}
-                    formats={format}
+                    formats={formats}
                   />
                 </div>
               </div>

@@ -9,7 +9,23 @@ const PostSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      enum: ["Sports", "Coding", "Music", "Climbing"],
+      enum: [
+        "Art",
+        "Comics",
+        "Crafts",
+        "Dance",
+        "Design",
+        "Fashion",
+        "Film",
+        "Food",
+        "Games",
+        "Journalism",
+        "Music",
+        "Photography",
+        "Technology",
+        "Theater",
+        "Uncategorized",
+      ],
       message: "{VALUE IS NOT SUPPORTED}",
     },
     desc: {

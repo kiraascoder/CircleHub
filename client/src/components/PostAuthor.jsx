@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
+import ReactTimeAgo from "react-time-ago";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+import id from "javascript-time-ago/locale/id.json";
 
-const PostAuthor = ({ authorID, createdAt }) => {
-  const [author, setAuthor] = useState({});
+TimeAgo.addDefaultLocale(en);
+TimeAgo.addLocale(id);
+
+const PostAuthor = ({ authorID, createdAt, postID }) => {
+  const [author, setAuthor] = useState(null); // Ubah ke null untuk cek loading
 
   useEffect(() => {
     const fetchAuthor = async () => {
@@ -13,11 +19,15 @@ const PostAuthor = ({ authorID, createdAt }) => {
         );
         setAuthor(response.data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching author:", error);
       }
     };
     fetchAuthor();
-  }, []);
+  }, [authorID]);
+
+  if (author === null) {
+    return <div>Loading...</div>; // Tampilkan loading state
+  }
 
   return (
     <div>
@@ -25,7 +35,9 @@ const PostAuthor = ({ authorID, createdAt }) => {
         <h2 className="text-lg font-semibold text-gray-900 -mt-1">
           {author.name}
         </h2>
-        <small className="text-sm text-gray-700">{createdAt}</small>
+        <small className="text-sm text-gray-700">
+          <ReactTimeAgo date={new Date(createdAt)} locale="id" />
+        </small>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ export const app_id = process.env.STREAM_APP_ID;
 export const jwtToken = process.env.JWT_SECRET;
 
 app.use(express.json());
-app.use(cors({ origin: true }));
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 
 // static File
 app.use("/uploads", express.static("uploads"));

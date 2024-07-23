@@ -11,7 +11,6 @@ const Login = () => {
 
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
   const { setCurrentUser } = useContext(UserContext);
 
   const changeInputHandler = (e) => {
@@ -30,6 +29,7 @@ const Login = () => {
         userData
       );
       const user = response.data;
+      localStorage.setItem("token", user.token); // Simpan token di localStorage
       setCurrentUser(user);
       navigate("/homepage");
     } catch (error) {
@@ -43,7 +43,7 @@ const Login = () => {
         <div className="container pt- pl-8">
           <div className="md:flex items-center justify-between sm:flex-col md:flex-row">
             {/* Left Content */}
-            <div className="w full md:basis-1/2">
+            <div className="w-full md:basis-1/2">
               <h5
                 data-aos="fade-right"
                 data-aos-duration="1500"
@@ -51,7 +51,7 @@ const Login = () => {
               >
                 Circle Hub
               </h5>
-              <p className="flex gap-2 text-headingColor font-[500] text-[15px] leading-7 sm:pl-5 sm:pr-10 ">
+              <p className="flex gap-2 text-headingColor font-[500] text-[15px] leading-7 sm:pl-5 sm:pr-10">
                 Circle Hub adalah aplikasi chat komunitas yang bertujuan untuk
                 memfasilitasi komunikasi dan kolaborasi di antara pengguna yang
                 memiliki minat yang sama. Dengan fitur seperti obrolan
@@ -68,7 +68,7 @@ const Login = () => {
                 </a>
               </div>
             </div>
-            {/* End Left Content*/}
+            {/* End Left Content */}
             {/* Right Login */}
             <div className="w-full basis-1/2 mt-10 sm:mt-0">
               <div className="bg-white">
@@ -123,15 +123,15 @@ const Login = () => {
 
                     <div className="text-center items-center justify-center flex gap-2">
                       Not Registered Yet?
-                      <a className="text-blue-500" href="/register">
+                      <Link className="text-blue-500" to="/register">
                         Create one
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/* End Right Form*/}
+            {/* End Right Form */}
           </div>
         </div>
       </section>
