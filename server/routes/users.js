@@ -9,6 +9,12 @@ import {
   followers,
   followings,
 } from "../controllers/user.js";
+
+import {
+ followings
+} from "../controllers/getFollowing.js";
+
+
 import { authMiddleware } from "../middleware/authUser.js";
 
 const router = express.Router();
