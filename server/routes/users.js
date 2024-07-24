@@ -14,6 +14,7 @@ import {
  followings
 } from "../controllers/getFollowing.js";
 
+import {followers} from "../controllers/getFollower.js"
 
 import { authMiddleware } from "../middleware/authUser.js";
 
